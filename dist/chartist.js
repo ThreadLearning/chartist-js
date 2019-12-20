@@ -333,7 +333,9 @@ var Chartist = {
     Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
       return svg.getAttributeNS(Chartist.namespaces.xmlns, 'ct');
     }).forEach(function removePreviousElement(svg) {
-      container.removeChild(svg);
+      if (container.contains(svg)) {
+        container.removeChild(svg);
+      }
     });
 
     // Create svg object with width and height or use 100% as default
@@ -3812,7 +3814,7 @@ var Chartist = {
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    if(options.stackBars && data.normalized.series.length !== 0) {
+    if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode) && data.normalized.series.length !== 0) {
 
       // If stacked bars we need to calculate the high low from stacked values from each series
       var serialSums = Chartist.serialMap(data.normalized.series, function serialSums() {
